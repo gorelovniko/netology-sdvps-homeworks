@@ -1,0 +1,46 @@
+# ---
+# - name: Install NGINX
+#   gather_facts: false
+#   hosts: webservers
+#   vars:
+#     ansible_ssh_user: user
+#   become: yes
+  # pre_tasks:
+  #   - name: Validating the ssh port is open and
+  #     wait_for:
+  #       host: "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
+  #       port: 22
+  #       delay: 5
+  #       timeout: 300
+  #       state: started
+  #       search_regex: OpenSSH
+  # tasks:
+  #   - name: install nginx
+  #     yum:
+  #       name: nginx
+  #       state: present
+  #   - name: Start nginx
+  #     systemd:
+  #       name: nginx
+  #       state: started
+  #       enable: yes
+
+---
+- name: Install and configure nginx for static website hosting
+  hosts: webservers
+  vars:
+    ansible_ssh_user: user
+  become: yes
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Ensure nginx is running
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
